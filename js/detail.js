@@ -5,7 +5,8 @@ async function getDetails() {
     const res = await fetch('https://dummyjson.com/products');
     const { products } = await res.json();
 
-    // allProducts = products;
+    // product.push([product])
+    // localStorage.setItem("product",JSON.stringify(product))
 
     let str = '';
     
@@ -30,8 +31,8 @@ async function getDetails() {
 
                     <p>${product.description}</p>
 
-                    <input type="number" value="" min="48">
-                    <button>Add to cart</button>
+                    <input type="number" value="" id="quantity">
+                    <button id ="addToCart">Add to cart</button>
                     <p>Minimum order: 48 units</p>
                 </div>
             </div>
@@ -56,23 +57,73 @@ async function getDetails() {
 
 
         `
-        console.log(product.reviews.length)
+
     document.getElementById("detail").innerHTML = str;
+
+
     
     let div = document.getElementById('review')
     // div.innerHTML = " ";
-    products.forEach((product,index) => {
+    product.reviews.forEach((review,index) => {
+        let rate = " "
+        switch(review.rating){
+            case 0:{
+               rate = "☆☆☆☆☆" 
+               break;
+            }
+            case 1:{
+                rate = "★☆☆☆☆"
+                break;
+            }
+            case 2:{
+                rate = "★★☆☆☆"
+                break;
+            }
+            case 3:{
+                rate = "★★★☆☆"
+            }
+            case 4:{
+                rate = "★★★★☆"
+                break;
+            }
+            case 5:{
+                rate = "★★★★★"
+                break;
+            }
+            default:{
+                rate = " "
+                break;
+            }
+        }
         let reviewDiv =  document.createElement("div")
         reviewDiv.innerHTML =`
         <div class="review">
-            <b>${product.reviews[index].reviewerName}</b> -${product.reviews[index].date}
-            <div>★★★★★</div>
-            <p>${product.reviews[index].comment}</p>
+            <b>${review.reviewerName}</b> -${review.date}
+            <div>${rate}</div>
+            <p>${review.comment}</p>
         </div>
         `
         div.appendChild(reviewDiv)
     });
-    
+
+        document.getElementById("addToCart").addEventListener("click", ()=>{
+        const quantity = parseInt(document.getElementById("quantity").value)
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        
+        cart.push({
+            id : product.id,
+            title : product.title,
+            price : product.price,
+            thumbnail : product.thumbnail,
+            quantity : quantity
+
+        })
+
+        localStorage.setItem("cart", JSON.stringify(cart))
+
+        alert("product added to cart!")
+    })
   
 }
 
